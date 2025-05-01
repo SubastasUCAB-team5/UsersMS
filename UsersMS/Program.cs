@@ -10,9 +10,10 @@ using UsersMS.Core.Repositories;
 using UsersMS.Core.Service;
 using UsersMS.Infrastructure.DataBase;
 using UsersMS.Infrastructure.Repositories;
-using UsersMS.Infrastructure.Service;
 using UsersMS.Infrastructure.Setings;
 using System.Configuration;
+using MassTransit;
+using UsersMS.Infrastructure.Messaging.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,24 +35,6 @@ builder.Services.AddControllers()
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddMediatR(typeof(CreateAuctioneerCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetTechnicalSupportQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(DeleteAuctioneerCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(UpdateAuctioneerCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetAllBiddersQueryHandler).Assembly);
-
-builder.Services.AddMediatR(typeof(CreateTechnicalSupportCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetAuctioneersQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(DeleteTechnicalSupportCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(UpdateTechnicalSupportCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetAllTechnicalSupportsQueryHandler).Assembly);
-
-builder.Services.AddMediatR(typeof(CreateBidderCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(DeleteBidderCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(UpdateBidderCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetBidderQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetAllAuctioneersQueryHandler).Assembly);
-
 builder.Services.AddMediatR(typeof(CreateAdministratorCommandHandler).Assembly);
 builder.Services.AddMediatR(typeof(DeleteAdministratorCommandHandler).Assembly);
 builder.Services.AddMediatR(typeof(GetAdministratorQueryHandler).Assembly);
@@ -61,15 +44,31 @@ builder.Services.AddMediatR(typeof(UpdateAdministratorCommandHandler).Assembly);
 builder.Services.AddTransient<IUsersDbContext, UsersDbContext>();
 builder.Services.AddTransient<IAdministratorRepository, AdministratorRepository>();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
-builder.Services.AddTransient<IBidderRepository, BidderRepository>();
-builder.Services.AddTransient<ITechnicalSupportRepository, TechnicalSupportRepository>();
-builder.Services.AddTransient<IAuctioneerRepository, AuctioneerRepository>();
-
-builder.Services.AddTransient<IEmailService, EmailService>();
 
 var dbConnectionString = builder.Configuration.GetValue<string>("DefaultConnection");
 builder.Services.AddDbContext<UsersDbContext>(options =>
 options.UseSqlServer(dbConnectionString));
+
+builder.Services.AddSingleton<MongoDbContext>();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<UserCreatedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h => {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ReceiveEndpoint("user-created-queue", e =>
+        {
+            e.ConfigureConsumer<UserCreatedConsumer>(context);
+        });
+    });
+});
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

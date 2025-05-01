@@ -12,6 +12,7 @@ namespace UsersMS.Application.Handlers.Commands
     {
         private readonly IAdministratorRepository _administratorRepository;
         private readonly IKeycloakService _keycloakService;
+        public IEventBus
 
         public CreateAdministratorCommandHandler(IAdministratorRepository administratorRepository, IKeycloakService keycloakService)
         {
@@ -62,6 +63,7 @@ namespace UsersMS.Application.Handlers.Commands
             // Asignar el rol al usuario en Keycloak
             await _keycloakService.AssignRoleAsync(administrator.Email, request._createAdministratorDto.Role.ToString(), token);
 
+            eventbus.push
             return "Administrator sucessfully created.";
         }
     }
