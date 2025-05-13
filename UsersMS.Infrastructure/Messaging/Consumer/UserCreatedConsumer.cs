@@ -16,14 +16,22 @@ public class UserCreatedConsumer : IConsumer<UserCreatedEvent>
 
     public async Task Consume(ConsumeContext<UserCreatedEvent> context)
     {
+        var message = context.Message;
+
         var user = new UserReadModel
         {
-            Id = context.Message.UserId,
-            FullName = context.Message.FullName,
-            Email = context.Message.Email,
-            Role = context.Message.Role
+            Id = message.Id,
+            Email = message.Email,
+            Name = message.Name,
+            LastName = message.LastName,
+            Phone = message.Phone,
+            Address = message.Address,
+            Password = message.Password,
+            Role = message.Role,
+            State = message.State
         };
 
         await _mongo.Users.InsertOneAsync(user);
     }
+
 }

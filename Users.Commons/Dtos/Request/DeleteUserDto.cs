@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace UsersMS.Commons.Dtos.Request
 {
-    public record DeleteAdministratorDto
+    public record DeleteUserDto
     {
-        public Guid AdministratorId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

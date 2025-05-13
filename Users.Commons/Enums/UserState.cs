@@ -8,7 +8,7 @@ namespace UsersMS.Commons.Enums
 {
     public enum UserState
     {
-        Active,
-        Inactive
+        Inactive,
+        Active
     }
 }

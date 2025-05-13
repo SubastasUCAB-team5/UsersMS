@@ -2,18 +2,21 @@
 using MongoDB.Driver;
 using UsersMS.Domain.Entities;
 
-namespace UsersMS.Infrastructure.DataBase;
-
-public class MongoDbContext
+namespace UsersMS.Infrastructure.DataBase
 {
-    private readonly IMongoDatabase _database;
-
-    public MongoDbContext(IConfiguration configuration)
+    public class MongoDbContext
     {
-        var connectionString = configuration.GetConnectionString("MongoDB");
-        var client = new MongoClient(connectionString);
-        _database = client.GetDatabase("UsersMS_ReadDB");
-    }
+        private readonly IMongoDatabase _database;
 
-    public IMongoCollection<UserReadModel> Users => _database.GetCollection<UserReadModel>("Users");
+        public MongoDbContext(IConfiguration configuration)
+        {
+            var connectionString = configuration["MongoDb:ConnectionString"];
+            var dbName = configuration["MongoDb:Database"];
+
+            var client = new MongoClient(connectionString);
+            _database = client.GetDatabase(dbName);
+        }
+
+        public IMongoCollection<UserReadModel> Users => _database.GetCollection<UserReadModel>("Users");
+    }
 }

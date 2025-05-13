@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using UsersMS.Application.Handlers.Commands;
-using UsersMS.Application.Handlers.Querys;
+using UsersMS.Application.Handlers.Queries;
 using UsersMS.Core.DataBase;
 using UsersMS.Core.Repositories;
 using UsersMS.Core.Service;
@@ -14,6 +14,7 @@ using UsersMS.Infrastructure.Setings;
 using System.Configuration;
 using MassTransit;
 using UsersMS.Infrastructure.Messaging.Consumers;
+using UsersMS.Infrastructure.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,20 +36,28 @@ builder.Services.AddControllers()
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddMediatR(typeof(CreateAdministratorCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(DeleteAdministratorCommandHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetAdministratorQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(GetAllAdministratorsQueryHandler).Assembly);
-builder.Services.AddMediatR(typeof(UpdateAdministratorCommandHandler).Assembly);
+builder.Services.AddMediatR(typeof(CreateUserCommandHandler).Assembly);
+builder.Services.AddMediatR(typeof(UpdateUserCommandHandler).Assembly);
+builder.Services.AddMediatR(typeof(DeleteUserCommandHandler).Assembly);
 
+builder.Services.AddScoped<IEventPublisher, EventPublisher>();
 builder.Services.AddTransient<IUsersDbContext, UsersDbContext>();
-builder.Services.AddTransient<IAdministratorRepository, AdministratorRepository>();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUsersDbContext, UsersDbContext>();
+
+System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+
+builder.Services.AddSingleton<MongoDbContext>();
+builder.Services.AddSingleton(provider =>
+{
+    var context = provider.GetRequiredService<MongoDbContext>();
+    return context.Users;
+});
 
 var dbConnectionString = builder.Configuration.GetValue<string>("DefaultConnection");
 builder.Services.AddDbContext<UsersDbContext>(options =>
 options.UseSqlServer(dbConnectionString));
-
 builder.Services.AddSingleton<MongoDbContext>();
 
 builder.Services.AddMassTransit(x =>

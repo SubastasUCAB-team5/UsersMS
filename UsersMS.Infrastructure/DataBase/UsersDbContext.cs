@@ -22,10 +22,12 @@ namespace UsersMS.Infrastructure.DataBase
             get { return this; }
         }
 
-        public virtual DbSet<Administrator> Administrators { get; set; } = null!;
-        public virtual DbSet<TechnicalSupport> TechnicalSupports { get; set; } = null!;
-        public virtual DbSet<Bidder> Bidders { get; set; } = null!;
-        public virtual DbSet<Auctioneer> Auctioneers { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
+
+        //public virtual DbSet<Administrator> Administrators { get; set; } = null!;
+       // public virtual DbSet<TechnicalSupport> TechnicalSupports { get; set; } = null!;
+        //public virtual DbSet<Bidder> Bidders { get; set; } = null!;
+       // public virtual DbSet<Auctioneer> Auctioneers { get; set; } = null!;
 
 
         public IDbContextTransactionProxy BeginTransaction()

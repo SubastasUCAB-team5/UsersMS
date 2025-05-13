@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/*using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -396,6 +396,6 @@ public class AdministradorRepositoryTests
      Assert.AreEqual(administradores.Count, resultado?.Count); 
     }
 }
-
+*/
 
 

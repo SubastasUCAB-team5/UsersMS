@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace UsersMS.Infrastructure.Exceptions
 {
-    public class AdministratorNotFoundException : Exception
+    public class UserNotFoundException : Exception
     {
-        public AdministratorNotFoundException() { }
+        public UserNotFoundException() { }
 
-        public AdministratorNotFoundException(string message)
+        public UserNotFoundException(string message)
             : base(message) { }
 
-        public AdministratorNotFoundException(string message, Exception inner)
+        public UserNotFoundException(string message, Exception inner)
             : base(message, inner) { }
     }
 }

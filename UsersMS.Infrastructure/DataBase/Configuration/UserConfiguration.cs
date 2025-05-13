@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,10 @@ using UsersMS.Domain.Entities;
 
 namespace UsersMS.Infrastructure.DataBase.Configuration
 {
-    public class TechnicalSupportConfiguration : IEntityTypeConfiguration<TechnicalSupport>
+    public class UserConfiguration : IEntityTypeConfiguration<User>
     {
-        public void Configure(EntityTypeBuilder<TechnicalSupport> builder)
+        public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.Property(s => s.TechnicalSupportId).IsRequired();
             builder.Property(s => s.Email).IsRequired().HasMaxLength(50);
             builder.Property(s => s.Password).IsRequired();
             builder.Property(s => s.Id).IsRequired();
@@ -25,4 +24,5 @@ namespace UsersMS.Infrastructure.DataBase.Configuration
             builder.Property(s => s.State).IsRequired();
         }
     }
+
 }

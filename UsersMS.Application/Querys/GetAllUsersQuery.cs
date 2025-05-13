@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UsersMS.Commons.Dtos.Response;
 
-namespace UsersMS.Application.Querys
+namespace UsersMS.Application.Queries
 {
-    public class GetAllAdministratorsQuery : IRequest<List<GetAllAdministratorsDto>>
+    public class GetAllUsersQuery : IRequest<List<GetAllUsersDto>>
     {
-        public GetAllAdministratorsQuery() { }
+        public GetAllUsersQuery() { }
     }
 }
+
