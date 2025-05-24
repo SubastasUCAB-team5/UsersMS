@@ -84,6 +84,5 @@ namespace UsersMS.Test.UsersMS.Application.Test.Querys
             var query = new GetUserQuery(userId);
             Assert.Equal(userId, query.UserId);
         }
-}
     }
 }
