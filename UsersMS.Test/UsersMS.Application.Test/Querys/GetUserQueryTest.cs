@@ -69,5 +69,21 @@ namespace UsersMS.Test.UsersMS.Application.Test.Querys
             // Act & Assert
             await Assert.ThrowsAsync<Exception>(() => handler.Handle(query, CancellationToken.None));
         }
+
+        [Fact]
+        public void Default_Constructor_Should_Set_Defaults()
+        {
+            var query = new GetUserQuery();
+            Assert.Equal(Guid.Empty, query.UserId);
+        }
+
+        [Fact]
+        public void Constructor_With_UserId_Should_Set_UserId()
+        {
+            var userId = Guid.NewGuid();
+            var query = new GetUserQuery(userId);
+            Assert.Equal(userId, query.UserId);
+        }
+}
     }
 }
