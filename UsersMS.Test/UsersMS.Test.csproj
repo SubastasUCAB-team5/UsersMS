@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Users.Core\UsersMS.Core.csproj" />
+    <ProjectReference Include="..\UsersMS.Core\UsersMS.Core.csproj" />
     <ProjectReference Include="..\UsersMS.Application\UsersMS.Application.csproj" />
     <ProjectReference Include="..\UsersMS.Domain\UsersMS.Domain.csproj" />
     <ProjectReference Include="..\UsersMS.Infrastructure\UsersMS.Infrastructure.csproj" />

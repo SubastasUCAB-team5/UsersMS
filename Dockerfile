@@ -6,8 +6,8 @@ WORKDIR /src
 COPY UsersMS.sln ./
 COPY UsersMS/UsersMS.csproj UsersMS/
 COPY UsersMS.Application/UsersMS.Application.csproj UsersMS.Application/
-COPY Users.Commons/UsersMS.Commons.csproj Users.Commons/
-COPY Users.Core/UsersMS.Core.csproj Users.Core/
+COPY UsersMS.Commons/UsersMS.Commons.csproj UsersMS.Commons/
+COPY UsersMS.Core/UsersMS.Core.csproj UsersMS.Core/
 COPY UsersMS.Domain/UsersMS.Domain.csproj UsersMS.Domain/
 COPY UsersMS.Infrastructure/UsersMS.Infrastructure.csproj UsersMS.Infrastructure/
 COPY UsersMS.Test/UsersMS.Test.csproj UsersMS.Test/
