@@ -15,6 +15,7 @@ using System.Configuration;
 using MassTransit;
 using UsersMS.Infrastructure.Messaging.Consumers;
 using UsersMS.Infrastructure.Service;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,7 @@ builder.Services.AddScoped<IEventPublisher, EventPublisher>();
 builder.Services.AddTransient<IUsersDbContext, UsersDbContext>();
 builder.Services.AddScoped<IKeycloakService, KeycloakService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IUserReadRepository, UserReadRepository>();
 builder.Services.AddTransient<IUsersDbContext, UsersDbContext>();
 
 System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
@@ -59,6 +61,13 @@ var dbConnectionString = builder.Configuration.GetValue<string>("DefaultConnecti
 builder.Services.AddDbContext<UsersDbContext>(options =>
 options.UseSqlServer(dbConnectionString));
 builder.Services.AddSingleton<MongoDbContext>();
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var mongoClient = new MongoClient(configuration["MongoDb:ConnectionString"]);
+    return mongoClient.GetDatabase(configuration["MongoDb:Database"]);
+});
+
 
 builder.Services.AddMassTransit(x =>
 {
