@@ -26,7 +26,6 @@ public class UserCreatedConsumer : IConsumer<UserCreatedEvent>
             LastName = message.LastName,
             Phone = message.Phone,
             Address = message.Address,
-            Password = message.Password,
             Role = message.Role,
             State = message.State
         };

@@ -25,12 +25,41 @@ namespace UsersMS.Infrastructure.Service
             {
                 Id = user.Id,
                 Email = user.Email,
+                DocumentId = user.DocumentId,
                 Name = user.Name,
                 LastName = user.LastName,
                 Phone = user.Phone,
                 Address = user.Address,
-                Password = user.Password,
                 Role = user.Role,
+                State = user.State
+            };
+
+            await _publishEndpoint.Publish(@event);
+        }
+
+        public async Task PublishUserUpdatedAsync(User user)
+        {
+            var @event = new UserUpdatedEvent
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.Name,
+                LastName = user.LastName,
+                Phone = user.Phone,
+                Address = user.Address,
+                Role = user.Role,
+                State = user.State
+            };
+
+            await _publishEndpoint.Publish(@event);
+        }
+
+        public async Task PublishUserDeletedAsync(User user)
+        {
+            var @event = new UserDeletedEvent
+            {
+                Id = user.Id,
+                Email = user.Email,
                 State = user.State
             };
 
