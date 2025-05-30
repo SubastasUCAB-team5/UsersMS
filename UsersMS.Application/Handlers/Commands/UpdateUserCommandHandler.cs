@@ -3,7 +3,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UsersMS.Application.Commands;
+using UsersMS.Application.Security;
 using UsersMS.Core.Repositories;
+using UsersMS.Core.Service;
 using UsersMS.Infrastructure.Exceptions;
 
 namespace UsersMS.Application.Handlers.Commands
@@ -12,11 +14,13 @@ namespace UsersMS.Application.Handlers.Commands
     {
         private readonly IUserRepository _userRepository;
         private readonly IKeycloakService _keycloakService;
+        private readonly IEventPublisher _eventpublisher;
 
-        public UpdateUserCommandHandler(IUserRepository userRepository, IKeycloakService keycloakService)
+        public UpdateUserCommandHandler(IUserRepository userRepository, IKeycloakService keycloakService,IEventPublisher eventPublisher)
         {
             _userRepository = userRepository;
             _keycloakService = keycloakService;
+            _eventpublisher = eventPublisher;
         }
 
         public async Task<string> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -26,7 +30,7 @@ namespace UsersMS.Application.Handlers.Commands
                 throw new UserNotFoundException("User not found.");
 
             if (!string.IsNullOrEmpty(request.UpdateUserDto.Email)) user.Email = request.UpdateUserDto.Email;
-            if (!string.IsNullOrEmpty(request.UpdateUserDto.Password)) user.Password = request.UpdateUserDto.Password;
+
             if (!string.IsNullOrEmpty(request.UpdateUserDto.DocumentId)) user.DocumentId = request.UpdateUserDto.DocumentId;
             if (!string.IsNullOrEmpty(request.UpdateUserDto.Name)) user.Name = request.UpdateUserDto.Name;
             if (!string.IsNullOrEmpty(request.UpdateUserDto.LastName)) user.LastName = request.UpdateUserDto.LastName;
@@ -47,6 +51,7 @@ namespace UsersMS.Application.Handlers.Commands
 
             await _keycloakService.UpdateUserAsync(user.Email!, updatePayload, token);
             await _userRepository.UpdateAsync(user);
+            await _eventpublisher.PublishUserUpdatedAsync(user);
 
             return "User updated successfully.";
         }

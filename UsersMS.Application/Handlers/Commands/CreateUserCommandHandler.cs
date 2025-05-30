@@ -3,6 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UsersMS.Application.Commands;
+using UsersMS.Application.Security;
 using UsersMS.Core.Repositories;
 using UsersMS.Core.Service;
 using UsersMS.Domain.Entities;
@@ -29,7 +30,6 @@ namespace UsersMS.Application.Handlers.Commands
 
             var user = new User(
                 dto.Email!,
-                dto.Password!,
                 dto.DocumentId!,
                 dto.Name!,
                 dto.LastName!,
@@ -50,13 +50,15 @@ namespace UsersMS.Application.Handlers.Commands
                 lastName = user.LastName,
                 email = user.Email,
                 enabled = true,
+                requiredActions = new[] { "VERIFY_EMAIL" },
                 credentials = new[]
                 {
-                    new { type = "password", value = user.Password, temporary = false }
+                    new { type = "password", value = request.CreateUserDto.Password, temporary = false }
                 },
             };
 
-            await _keycloakService.CreateUserAsync(keycloakUser, token);
+            var keycloakUserId = await _keycloakService.CreateUserAsync(keycloakUser, token);
+            await _keycloakService.SendVerificationEmailAsync(keycloakUserId, token);
             await _keycloakService.AssignRoleAsync(user.Email!, user.Role.ToString(), token);
             await _eventPublisher.PublishUserCreatedAsync(user);
 
