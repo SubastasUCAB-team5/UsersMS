@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
@@ -31,8 +32,8 @@ namespace UsersMS.Infrastructure.Repositories
         {
             var content = new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("client_id", _configuration["Keycloak:ClientId"]),
-                new KeyValuePair<string, string>("client_secret", _configuration["Keycloak:ClientSecret"]),
+                new KeyValuePair<string, string>("client_id", _configuration["Keycloak:ClientId"]!),
+                new KeyValuePair<string, string>("client_secret", _configuration["Keycloak:ClientSecret"]!),
                 new KeyValuePair<string, string>("grant_type", "client_credentials")
             });
 
@@ -48,7 +49,7 @@ namespace UsersMS.Infrastructure.Repositories
             return json.GetProperty("access_token").GetString() ?? throw new Exception("Access token not found in response.");
         }
 
-        public async Task CreateUserAsync(object userDto, string token)
+        public async Task<string> CreateUserAsync(object userDto, string token)
         {
             var requestContent = new StringContent(JsonSerializer.Serialize(userDto), Encoding.UTF8, "application/json");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -60,7 +61,20 @@ namespace UsersMS.Infrastructure.Repositories
                 var error = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Failed to create user. Response: {error}");
             }
+
+            // Obtener el ID del usuario desde el header Location
+            var locationHeader = response.Headers.Location?.ToString();
+
+            if (string.IsNullOrEmpty(locationHeader) || !locationHeader.Contains("/users/"))
+            {
+                throw new Exception("Could not retrieve user ID from response headers.");
+            }
+
+            var userId = locationHeader.Split("/users/").Last(); // el ID está al final
+
+            return userId;
         }
+
 
         public async Task DeleteUserAsync(string username, string token)
         {
@@ -233,6 +247,18 @@ namespace UsersMS.Infrastructure.Repositories
                 throw new Exception($"No se pudo asignar el rol '{role}' al usuario '{username}'. Respuesta: {error}");
             }
         }
+
+        public async Task SendVerificationEmailAsync(string userId, string token)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Put,$"/admin/realms/{_realm}/users/{userId}/execute-actions-email");
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            request.Content = JsonContent.Create(new[] { "VERIFY_EMAIL" });
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+
 
     }
 }

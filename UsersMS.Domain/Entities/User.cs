@@ -12,8 +12,7 @@ namespace UsersMS.Domain.Entities
     public class User : Base
     {
         public string Email { get; set; } = default!;
-        public string Password { get; set; } = default!;
-        public string DocumentId { get; set; } = default!; // ← cédula u otro ID visible
+        public string DocumentId { get; set; } = default!; // ← cédula 
         public string Name { get; set; } = default!;
         public string LastName { get; set; } = default!;
         public string Phone { get; set; } = default!;
@@ -23,11 +22,10 @@ namespace UsersMS.Domain.Entities
 
         public User() { }
 
-        public User(string email, string password, string documentId, string name, string lastname, string phone, string address, UserRole role, UserState state)
+        public User(string email, string documentId, string name, string lastname, string phone, string address, UserRole role, UserState state)
         {
             Id = Guid.NewGuid(); // base.Id
             Email = email;
-            Password = password;
             DocumentId = documentId;
             Name = name;
             LastName = lastname;

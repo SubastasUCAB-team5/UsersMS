@@ -25,7 +25,7 @@ namespace UsersMS.Application.Validator
                 .WithMessage("Password debe tener al menos 8 caracteres, incluyendo una letra y un número")
                 .WithErrorCode("022");
 
-            RuleFor(s => s.Name).NotNull().WithMessage("Name no puede ser nulo").WithErrorCode("040");
+            RuleFor(s => s.Name).NotEmpty().WithMessage("Name no puede ser nulo").WithErrorCode("040");
             RuleFor(s => s.LastName).NotNull().WithMessage("Apellido no puede ser nulo").WithErrorCode("050");
             RuleFor(s => s.DocumentId).NotNull().WithMessage("Cédula no puede ser nula").WithErrorCode("030");
             RuleFor(s => s.Role).IsInEnum().WithMessage("Rol inválido").WithErrorCode("060");

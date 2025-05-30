@@ -7,7 +7,7 @@ namespace UsersMS.Core.Repositories
     {
         Task<string> GetAdminTokenAsync();
 
-        Task CreateUserAsync(object userDto, string token);
+        Task<string> CreateUserAsync(object userDto, string token);
 
         Task AssignRoleAsync(string username, string role, string token);
 
@@ -18,5 +18,7 @@ namespace UsersMS.Core.Repositories
         Task UpdateUserAsync(string userId, object userDto, string token);
 
         Task<JsonElement?> GetUserAsync(string username, string token);
+
+        Task SendVerificationEmailAsync(string userdId, string token);
     }
 }
