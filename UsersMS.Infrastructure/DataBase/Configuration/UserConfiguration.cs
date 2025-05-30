@@ -14,7 +14,6 @@ namespace UsersMS.Infrastructure.DataBase.Configuration
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.Property(s => s.Email).IsRequired().HasMaxLength(50);
-            builder.Property(s => s.Password).IsRequired();
             builder.Property(s => s.Id).IsRequired();
             builder.Property(s => s.Name).IsRequired();
             builder.Property(s => s.LastName).IsRequired();

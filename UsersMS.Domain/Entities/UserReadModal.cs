@@ -11,11 +11,11 @@ public class UserReadModel
     public Guid Id { get; set; } // ← ya no string
 
     public string Email { get; set; } = default!;
+    public string DocumentId { get; set; } = default!;
     public string Name { get; set; } = default!;
     public string LastName { get; set; } = default!;
     public string Phone { get; set; } = default!;
     public string Address { get; set; } = default!;
-    public string Password { get; set; } = default!;
 
     [BsonRepresentation(BsonType.String)]
     public UserRole Role { get; set; }
