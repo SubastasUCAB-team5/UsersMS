@@ -13,16 +13,16 @@ namespace UsersMS.Application.Handlers.Queries
 {
     public class GetUserQueryHandler : IRequestHandler<GetUserQuery, GetUserDto>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserReadRepository _userReadRepository;
 
-        public GetUserQueryHandler(IUserRepository userRepository)
+        public GetUserQueryHandler(IUserReadRepository userReadRepository)
         {
-            _userRepository = userRepository;
+            _userReadRepository = userReadRepository;
         }
 
         public async Task<GetUserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(request.UserId);
+            var user = await _userReadRepository.GetByIdAsync(request.UserId);
 
             if (user == null)
                 throw new UserNotFoundException("User not found.");
@@ -31,7 +31,6 @@ namespace UsersMS.Application.Handlers.Queries
             {
                 UserId = user.Id!,
                 Email = user.Email!,
-                Password = user.Password!,
                 DocumentId = user.DocumentId!,
                 Name = user.Name!,
                 LastName = user.LastName!,

@@ -13,16 +13,16 @@ namespace UsersMS.Application.Handlers.Queries
 {
     public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<GetAllUsersDto>>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserReadRepository _userReadRepository;
 
-        public GetAllUsersQueryHandler(IUserRepository userRepository)
+        public GetAllUsersQueryHandler(IUserReadRepository userReadRepository)
         {
-            _userRepository = userRepository;
+            _userReadRepository = userReadRepository;
         }
 
         public async Task<List<GetAllUsersDto>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllAsync();
+            var users = await _userReadRepository.GetAllAsync();
             if (users == null) throw new UserNotFoundException("Users not found.");
 
             return users.Select(user => new GetAllUsersDto
